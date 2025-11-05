@@ -1,7 +1,7 @@
 package SCOS.springsecurity.Controller;
-
 import SCOS.springsecurity.dto.*;
-import SCOS.springsecurity.entities.User;
+import SCOS.springsecurity.model.User;
+import SCOS.springsecurity.model.UserRole;
 import SCOS.springsecurity.reporitory.UserRepository;
 import SCOS.springsecurity.service.TokenService;
 import jakarta.validation.Valid;
@@ -11,10 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
@@ -42,8 +39,7 @@ public class AuthController {
         if(this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.login(), encryptedPassword, data.role().name());
-
+        User newUser = new User(data.login(), encryptedPassword, UserRole.valueOf(data.role().name()));
         this.repository.save(newUser);
 
         return ResponseEntity.ok().build();
