@@ -42,8 +42,8 @@ public class ClienteController
 
     }
 
-    @PutMapping("editar/{id}")
-    public ResponseEntity editar(@RequestBody ClienteDTO clienteDTO, @PathVariable Long id)
+    @PutMapping("/editar/{id}")
+    public ResponseEntity<Void> editar(@RequestBody ClienteDTO clienteDTO, @PathVariable Long id)
     {
 
         Cliente clienteSalvo = clienteService.buscar_por_id(id);
@@ -55,7 +55,25 @@ public class ClienteController
 
         }
 
-        return ResponseEntity.ok(clienteSalvo);
+        return ResponseEntity.noContent().build();
+
+    }
+
+    @DeleteMapping("/excluir/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable Long id)
+    {
+
+        Cliente  clienteSalvo = clienteService.buscar_por_id(id);
+
+        if(clienteSalvo == null)
+        {
+
+            return ResponseEntity.notFound().build();
+
+        }
+
+        clienteService.excluir(clienteSalvo);
+        return ResponseEntity.noContent().build();
 
     }
 
