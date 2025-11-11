@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -30,6 +31,6 @@ public class Cliente
     private String estado;
     private String rua_numero;
     private String bairro;
-    private Date data_cadastro;
+    private String data_cadastro;
 
 }
