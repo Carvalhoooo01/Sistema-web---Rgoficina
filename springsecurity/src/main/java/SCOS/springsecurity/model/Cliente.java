@@ -19,7 +19,7 @@ public class Cliente
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private Long id;
 
     private String nome;
     private String cpf_cnpj;
