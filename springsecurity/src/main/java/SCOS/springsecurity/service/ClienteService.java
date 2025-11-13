@@ -83,6 +83,13 @@ public class ClienteService
 
     }
 
+    public Cliente editar(Cliente cliente)
+    {
+
+        return clienteRepository.save(cliente);
+
+    }
+
     public boolean existe_igual(Cliente cliente)
     {
 

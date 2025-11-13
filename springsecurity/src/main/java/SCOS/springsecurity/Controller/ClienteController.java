@@ -55,6 +55,8 @@ public class ClienteController
 
         }
 
+        clienteService.editar(clienteSalvo);
+
         return ResponseEntity.noContent().build();
 
     }

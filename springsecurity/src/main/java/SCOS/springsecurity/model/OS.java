@@ -19,7 +19,7 @@ public class OS
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private Long id;
 
     @ManyToOne
     private Cliente cliente_id;
@@ -34,7 +34,7 @@ public class OS
     private String n_serial;
     private String descricao;
     private String prioridade;
-    private Date data_abertura;
+    private String data_abertura;
 
 
     /*cliente_id: _infos[0],
