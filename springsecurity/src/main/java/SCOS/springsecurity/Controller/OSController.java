@@ -2,6 +2,7 @@ package SCOS.springsecurity.Controller;
 
 import SCOS.springsecurity.dto.ClienteDTO;
 import SCOS.springsecurity.dto.OSDTO;
+import SCOS.springsecurity.dto.RelatorioDTO;
 import SCOS.springsecurity.model.Cliente;
 import SCOS.springsecurity.model.OS;
 import SCOS.springsecurity.service.OSService;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @RestController
@@ -78,6 +81,17 @@ public class OSController
         osService.excluir(osSalvo);
 
         return ResponseEntity.noContent().build();
+
+    }
+
+    @GetMapping("/relatorio")
+    public List<OS> relatorio(@RequestBody RelatorioDTO relatorioDTO)
+    {
+
+        LocalDate data_inicio = relatorioDTO.data_inicio().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate data_fim = relatorioDTO.data_final().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        return osService.gerar_relatorio(data_inicio, data_fim);
 
     }
 

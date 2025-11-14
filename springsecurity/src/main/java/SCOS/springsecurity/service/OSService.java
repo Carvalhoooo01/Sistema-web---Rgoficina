@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -91,5 +92,16 @@ public class OSService
 
     }
 
+    public List<OS> gerar_relatorio(LocalDate data_inicio, LocalDate data_fim)
+    {
+
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        String dataIniFormatada = data_inicio.format(fmt);
+        String dataFimFormatada = data_fim.format(fmt);
+
+        return osRepository.findAllForRelatorio(dataIniFormatada, dataFimFormatada);
+
+    }
 
 }

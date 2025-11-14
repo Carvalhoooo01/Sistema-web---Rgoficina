@@ -2,6 +2,7 @@ package SCOS.springsecurity.service;
 
 import SCOS.springsecurity.dto.ClienteDTO;
 import SCOS.springsecurity.model.Cliente;
+import SCOS.springsecurity.model.OS;
 import SCOS.springsecurity.reporitory.ClienteRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -100,6 +101,18 @@ public class ClienteService
         Example<Cliente> example = Example.of(cliente, matcher);
 
         return clienteRepository.exists(example);
+
+    }
+
+    public List<Cliente> gerar_relatorio(LocalDate data_inicio, LocalDate data_fim)
+    {
+
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        String dataIniFormatada = data_inicio.format(fmt);
+        String dataFimFormatada = data_fim.format(fmt);
+
+        return clienteRepository.findAllForRelatorio(dataIniFormatada, dataFimFormatada);
 
     }
 
