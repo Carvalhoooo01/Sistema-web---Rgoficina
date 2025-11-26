@@ -22,6 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import rg_oficina_backend.security.jwt.AuthEntryPointJwt;
 import rg_oficina_backend.security.jwt.AuthFilterToken;
 
+import java.util.Arrays;
+
 /**
  *
  * @author Gustavo Carvalho
@@ -52,8 +54,15 @@ public class WebSecurityConfig {
     
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        
-        http.cors(Customizer.withDefaults());
+
+        http.cors(cors -> cors.configurationSource(request -> {
+            var corsConfig = new org.springframework.web.cors.CorsConfiguration();
+            corsConfig.setAllowedOrigins(Arrays.asList("https://scos.netlify.app"));
+            corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            corsConfig.setAllowedHeaders(Arrays.asList("*"));
+            corsConfig.setAllowCredentials(true);
+            return corsConfig;
+        }));
         http.csrf(csrf -> csrf.disable())   
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

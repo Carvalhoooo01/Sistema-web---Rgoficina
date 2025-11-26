@@ -1,4 +1,4 @@
-package SCOS.springsecurity.model;
+package rg_oficina_backend.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

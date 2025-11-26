@@ -1,8 +1,7 @@
-package SCOS.springsecurity.reporitory;
+package rg_oficina_backend.repository;
 
-import SCOS.springsecurity.model.Cliente;
-import SCOS.springsecurity.model.OS;
-import SCOS.springsecurity.model.User;
+import rg_oficina_backend.entity.Cliente;
+import rg_oficina_backend.entity.OS;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,12 +1,12 @@
-package SCOS.springsecurity.Controller;
+package rg_oficina_backend.controller;
 
-import SCOS.springsecurity.dto.ClienteDTO;
-import SCOS.springsecurity.dto.InfoDTO;
-import SCOS.springsecurity.dto.RelatorioDTO;
-import SCOS.springsecurity.model.Cliente;
-import SCOS.springsecurity.model.OS;
-import SCOS.springsecurity.reporitory.ClienteRepository;
-import SCOS.springsecurity.service.ClienteService;
+import rg_oficina_backend.dto.ClienteDTO;
+import rg_oficina_backend.dto.InfoDTO;
+import rg_oficina_backend.dto.RelatorioDTO;
+import rg_oficina_backend.entity.Cliente;
+import rg_oficina_backend.entity.OS;
+import rg_oficina_backend.repository.ClienteRepository;
+import rg_oficina_backend.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

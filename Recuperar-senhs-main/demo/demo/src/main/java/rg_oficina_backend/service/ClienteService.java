@@ -1,9 +1,9 @@
-package SCOS.springsecurity.service;
+package rg_oficina_backend.service;
 
-import SCOS.springsecurity.dto.ClienteDTO;
-import SCOS.springsecurity.model.Cliente;
-import SCOS.springsecurity.model.OS;
-import SCOS.springsecurity.reporitory.ClienteRepository;
+import rg_oficina_backend.dto.ClienteDTO;
+import rg_oficina_backend.entity.Cliente;
+import rg_oficina_backend.entity.OS;
+import rg_oficina_backend.repository.ClienteRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;

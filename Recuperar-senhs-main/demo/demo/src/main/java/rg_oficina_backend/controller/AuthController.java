@@ -33,7 +33,7 @@ public class AuthController {
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationDTO authDto, HttpServletResponse response){
 
-        authService.login(authDto, response);
+        authService.login(authDto, response );
 
         return ResponseEntity.ok("Sucesso");
     }

@@ -1,6 +1,6 @@
-package SCOS.springsecurity.dto;
+package rg_oficina_backend.dto;
 
-import SCOS.springsecurity.model.UserRole;
+import rg_oficina_backend.entity.PermissaoPerfilRecursoEntity;
 
-public record RegisterDTO (String login, String password, UserRole role){
+public record RegisterDTO (String login, String password/*, UserRole role*/){
 }

@@ -1,8 +1,8 @@
-package SCOS.springsecurity.service;
+package rg_oficina_backend.service;
 
-import SCOS.springsecurity.dto.OSDTO;
-import SCOS.springsecurity.model.OS;
-import SCOS.springsecurity.reporitory.OSRepository;
+import rg_oficina_backend.dto.OSDTO;
+import rg_oficina_backend.entity.OS;
+import rg_oficina_backend.repository.OSRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

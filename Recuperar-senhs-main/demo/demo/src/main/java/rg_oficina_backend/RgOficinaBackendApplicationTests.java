@@ -7,7 +7,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 class RgOficinaBackendApplicationTests {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RgOficinaBackendApplicationTests.class, args);
+
+
+        SpringApplication.run(RgOficinaBackendApplicationTests.class, args);
+
+        System.out.println("Swagger UI: http://localhost:8080/swagger-ui.html");
+
 	}
 
 }
