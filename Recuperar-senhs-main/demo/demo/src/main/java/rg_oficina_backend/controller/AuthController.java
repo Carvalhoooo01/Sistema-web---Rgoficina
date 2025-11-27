@@ -57,4 +57,5 @@ public class AuthController {
     public String verificarCadastro(@PathVariable("uuid") String uuid) {
         return usuarioService.verificarCadastro(uuid);
     }
+
 }

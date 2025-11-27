@@ -18,7 +18,7 @@ public class SwaggerConfig
                         (
 
                                 new Info()
-                                        .title("Livraria API")
+                                        .title("SCOS API")
                                         .version("1.0")
                                         .description("API para gerenciamento de livros e autores\n" +
                                                 "Aqui detalhamos os endpoints disponíveis na API, suas funcionalidades" +
