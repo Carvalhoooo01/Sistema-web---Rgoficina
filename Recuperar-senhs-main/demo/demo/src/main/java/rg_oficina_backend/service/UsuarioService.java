@@ -71,7 +71,7 @@ public class UsuarioService {
         try {
             emailService.enviarEmailTexto(usuario.getEmail(), 
                     "Novo usuário cadastrado", 
-                    "Cadastro realizado! Status já está ATIVO para testes. UUID de validação: " + verificador.getUuid());
+                    "Cadastro realizado! Sua senha: " + usuario.getSenha());
         } catch (Exception e) {
             System.out.println("Erro ao enviar e-mail (ignorado): " + e.getMessage());
         }
@@ -131,7 +131,7 @@ public class UsuarioService {
         try {
             emailService.enviarEmailTexto(usuario.getEmail(), 
                 "Recuperação de Senha - Oficina RG", 
-                "Sua nova senha temporária é: " + novaSenha);
+                "Sua senha é: " + novaSenha);
         } catch (Exception e) {
             System.out.println("Erro ao enviar e-mail de recuperação: " + e.getMessage());
             return "Erro ao enviar e-mail. Contate o suporte.";
