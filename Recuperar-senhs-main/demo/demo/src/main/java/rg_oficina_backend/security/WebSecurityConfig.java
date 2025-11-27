@@ -18,6 +18,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import rg_oficina_backend.security.jwt.AuthEntryPointJwt;
 import rg_oficina_backend.security.jwt.AuthFilterToken;
 
+<<<<<<< HEAD
+=======
+import java.util.Arrays;
+
+/**
+ *
+ * @author Gustavo Carvalho
+ */
+
+>>>>>>> bec6468e303843eea5e3ecba9b82f63d1010acb3
 @Configuration
 @EnableMethodSecurity
 public class WebSecurityConfig {
@@ -43,6 +53,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
+<<<<<<< HEAD
         http.cors(Customizer.withDefaults());
         http.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
@@ -58,6 +69,26 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 );
 
+=======
+        http.cors(cors -> cors.configurationSource(request -> {
+            var corsConfig = new org.springframework.web.cors.CorsConfiguration();
+            corsConfig.setAllowedOrigins(Arrays.asList("https://scos.netlify.app"));
+            corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            corsConfig.setAllowedHeaders(Arrays.asList("*"));
+            corsConfig.setAllowCredentials(true);
+            return corsConfig;
+        }));
+        http.csrf(csrf -> csrf.disable())   
+            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
+                                            .requestMatchers("/usuario/**",
+                                                            "/v3/api-docs/**",
+                                                            "/swagger-ui/**",
+                                                            "/swagger-ui.html").permitAll() // Acesso liberado para testes
+                                            .anyRequest().authenticated());
+        
+>>>>>>> bec6468e303843eea5e3ecba9b82f63d1010acb3
         http.addFilterBefore(authFilterToken(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

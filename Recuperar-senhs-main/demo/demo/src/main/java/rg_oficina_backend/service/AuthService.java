@@ -1,5 +1,7 @@
 package rg_oficina_backend.service;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +25,7 @@ public class AuthService {
     @Autowired
     private JwtUtils jwtUtils;
 
-    public AcessoDTO login(AuthenticationDTO authDto) {
+    public void login(AuthenticationDTO authDto, HttpServletResponse response) {
         // Cria mecanismo de credencial para o spring
         UsernamePasswordAuthenticationToken userAuth = 
                 new UsernamePasswordAuthenticationToken(authDto.getUsername(), authDto.getPassword());
@@ -36,7 +38,15 @@ public class AuthService {
         UserDetailsImpl userAuthenticate = (UserDetailsImpl)authentication.getPrincipal();
         
         String token = jwtUtils.generateTokenFromUserDetailsImpl(userAuthenticate);
-        
-        return new AcessoDTO(token);
+
+        Cookie cookie = new Cookie("token", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(3600);
+        cookie.setDomain("localhost");
+
+        response.addCookie(cookie);
+
     }
 }

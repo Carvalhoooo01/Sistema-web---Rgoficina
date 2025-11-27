@@ -1,5 +1,6 @@
 package rg_oficina_backend.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,8 +31,11 @@ public class AuthController {
     
     // Login: Retorna o Token JWT
     @PostMapping(value = "/login")
-    public ResponseEntity<AcessoDTO> login(@RequestBody AuthenticationDTO authDto){
-        return ResponseEntity.ok(authService.login(authDto));
+    public ResponseEntity<?> login(@RequestBody AuthenticationDTO authDto, HttpServletResponse response){
+
+        authService.login(authDto, response );
+
+        return ResponseEntity.ok("Sucesso");
     }
     
     // Cadastro: Retorna mensagem de sucesso avisando do e-mail
@@ -53,4 +57,5 @@ public class AuthController {
     public String verificarCadastro(@PathVariable("uuid") String uuid) {
         return usuarioService.verificarCadastro(uuid);
     }
+
 }
