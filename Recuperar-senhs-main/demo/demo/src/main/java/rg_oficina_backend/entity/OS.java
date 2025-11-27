@@ -6,48 +6,39 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Entity
 @Table(name = "tb_os")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OS
-{
+public class OS {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Relacionamento com Cliente
     @ManyToOne
+    @JoinColumn(name = "cliente_id") // Boa prática: define o nome da coluna no banco
     private Cliente cliente_id;
 
     private String cpf_cnpj;
     private String endereco;
     private String telefone_celular;
     private String telefone_fixo;
-    private String tipo;
-    private String modelo;
-    private String marca;
+
+    // Dados da Máquina
+    private String tipo;    // Ex: Geladeira
+    private String modelo;  // Ex: Frost Free
+    private String marca;   // Ex: Brastemp
     private String n_serial;
+
     private String descricao;
     private String prioridade;
     private String data_abertura;
 
-
-    /*cliente_id: _infos[0],
-            cpf_cnpj: _infos[1],
-            endereco: _infos[2],
-            telefone_celular: _infos[3],
-            telefone_fixo: _infos[4],
-            tipo: _infos[5],
-            modelo: _infos[6],
-            marca: _infos[7],
-            n_serial: _infos[8],
-            descricao: _infos[9],
-            prioridade: _infos[10],
-            data_abertura: new Date().toLocaleDateString()*/
-
+    // --- REMOVI OS MÉTODOS "getCliente" QUE DAVAM ERRO ---
+    // O Lombok (@Getter) já cria automaticamente:
+    // getCliente_id(), getTipo(), getMarca(), etc.
 }

@@ -31,11 +31,13 @@ public class AuthController {
     
     // Login: Retorna o Token JWT
     @PostMapping(value = "/login")
-    public ResponseEntity<?> login(@RequestBody AuthenticationDTO authDto, HttpServletResponse response){
+    public ResponseEntity<AcessoDTO> login(@RequestBody AuthenticationDTO authDto, HttpServletResponse response){
 
-        authService.login(authDto, response );
+        // Agora capturamos o retorno do serviço
+        AcessoDTO acessoDTO = authService.login(authDto, response);
 
-        return ResponseEntity.ok("Sucesso");
+        // E enviamos no corpo da resposta
+        return ResponseEntity.ok(acessoDTO);
     }
     
     // Cadastro: Retorna mensagem de sucesso avisando do e-mail

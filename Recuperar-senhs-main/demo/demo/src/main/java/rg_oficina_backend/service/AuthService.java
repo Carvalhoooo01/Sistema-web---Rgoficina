@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import rg_oficina_backend.dto.AcessoDTO;
 import rg_oficina_backend.dto.AuthenticationDTO;
 import rg_oficina_backend.security.jwt.JwtUtils;
+import rg_oficina_backend.service.UserDetailsImpl; // CONFIRA SE ESTE IMPORT ESTÁ CERTO
 
 /**
  *
@@ -25,28 +26,32 @@ public class AuthService {
     @Autowired
     private JwtUtils jwtUtils;
 
-    public void login(AuthenticationDTO authDto, HttpServletResponse response) {
+    // ALTERADO: de void para AcessoDTO
+    public AcessoDTO login(AuthenticationDTO authDto, HttpServletResponse response) {
         // Cria mecanismo de credencial para o spring
-        UsernamePasswordAuthenticationToken userAuth = 
+        UsernamePasswordAuthenticationToken userAuth =
                 new UsernamePasswordAuthenticationToken(authDto.getUsername(), authDto.getPassword());
-        
-        // Prepara mecanismo para autenticacao
-        // Se a senha estiver errada, o Spring lança uma exceção aqui automaticamente (401 Unauthorized)
+
+        // Autentica
         Authentication authentication = authenticatioManager.authenticate(userAuth);
-        
-        // Busca usuario logado
+
+        // Busca usuario logado (Cast para sua implementação de UserDetails)
         UserDetailsImpl userAuthenticate = (UserDetailsImpl)authentication.getPrincipal();
-        
+
+        // Gera o token
         String token = jwtUtils.generateTokenFromUserDetailsImpl(userAuthenticate);
 
+        // --- Lógica do Cookie (Mantida) ---
         Cookie cookie = new Cookie("token", token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setHttpOnly(true); // Mais seguro contra XSS
+        cookie.setSecure(false);  // Em localhost deve ser false. Em produção (HTTPS), true.
         cookie.setPath("/");
         cookie.setMaxAge(3600);
-        cookie.setDomain("localhost");
+        // cookie.setDomain("localhost"); // As vezes isso atrapalha testes locais, deixei comentado por precaução
 
         response.addCookie(cookie);
 
+        // --- ALTERADO: Retorna o DTO com o Token ---
+        return new AcessoDTO(token);
     }
 }
