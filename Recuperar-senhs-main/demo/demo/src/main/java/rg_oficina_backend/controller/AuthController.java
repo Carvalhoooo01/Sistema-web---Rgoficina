@@ -1,5 +1,6 @@
 package rg_oficina_backend.controller;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +58,20 @@ public class AuthController {
     @GetMapping(value = "/verificarCadastro/{uuid}")
     public String verificarCadastro(@PathVariable("uuid") String uuid) {
         return usuarioService.verificarCadastro(uuid);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+
+        Cookie cookie = new Cookie("token", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok("Logout realizado");
     }
 
 }
