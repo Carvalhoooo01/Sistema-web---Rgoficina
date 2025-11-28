@@ -34,10 +34,10 @@ public class JwtUtils {
 
     @Value("${projeto.jwtSecret}")
     private String jwtSecret;
-    
+
     @Value("${projeto.jwtExpirationMs}")
     private int jwtExpirationMs;
-    
+
     public String generateTokenFromUserDetailsImpl(UserDetailsImpl userDetail) {
         return Jwts.builder()
                 .setSubject(userDetail.getUsername()) // O username agora é o email
@@ -46,7 +46,7 @@ public class JwtUtils {
                 .signWith(getSigninKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
-    
+
     public Key getSigninKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);
@@ -61,15 +61,15 @@ public class JwtUtils {
                 .getBody()
                 .getSubject();
     }
-    
+
     public boolean validateJwtToken(String authToken) {
         try {
             // Atualizado para parserBuilder()
             Jwts.parserBuilder()
-                .setSigningKey(getSigninKey())
-                .build()
-                .parseClaimsJws(authToken);
-            return true;    
+                    .setSigningKey(getSigninKey())
+                    .build()
+                    .parseClaimsJws(authToken);
+            return true;
         } catch(MalformedJwtException e) {
             logger.error("Token JWT inválido: {}", e.getMessage());
         } catch(ExpiredJwtException e) {
@@ -79,7 +79,7 @@ public class JwtUtils {
         } catch(IllegalArgumentException e) {
             logger.error("String de claims JWT está vazia: {}", e.getMessage());
         }
-        
+
         return false;
     }
 }

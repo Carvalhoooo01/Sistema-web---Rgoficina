@@ -1,13 +1,19 @@
+
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
 package rg_oficina_backend.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,8 +22,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import rg_oficina_backend.security.jwt.AuthEntryPointJwt;
 import rg_oficina_backend.security.jwt.AuthFilterToken;
-
-import java.util.Arrays;
 
 /**
  *
@@ -33,6 +37,7 @@ public class WebSecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+        // Configurado para aceitar senhas em texto puro (Transparente no banco)
         return NoOpPasswordEncoder.getInstance();
     }
 
@@ -47,37 +52,15 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
-        // 1. Configuração de CORS (Permitindo seu Front no Netlify)
-        http.cors(cors -> cors.configurationSource(request -> {
-            var corsConfig = new org.springframework.web.cors.CorsConfiguration();
-            // Adicionei localhost também para você testar localmente se precisar
-            corsConfig.setAllowedOrigins(Arrays.asList("https://scos.netlify.app", "http://localhost:8080"));
-            corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-            corsConfig.setAllowedHeaders(Arrays.asList("*"));
-            corsConfig.setAllowCredentials(true);
-            return corsConfig;
-        }));
-
-        // 2. Configuração de Segurança Unificada
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.cors(Customizer.withDefaults());
+        http.csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        // Liberar Autenticação e Usuários
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/usuario/**").permitAll()
-
-                        // Liberar Relatórios (PDF)
-                        .requestMatchers("/relatorios/**").permitAll()
-
-                        // Liberar Swagger (Documentação)
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-
-                        // Bloquear todo o resto (SEMPRE A ÚLTIMA LINHA)
-                        .anyRequest().authenticated()
-                );
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/usuario/**").permitAll() // Acesso liberado para testes
+                        .anyRequest().authenticated());
 
         http.addFilterBefore(authFilterToken(), UsernamePasswordAuthenticationFilter.class);
 

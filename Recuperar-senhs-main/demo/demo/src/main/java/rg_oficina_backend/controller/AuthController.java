@@ -33,11 +33,10 @@ public class AuthController {
     @PostMapping(value = "/login")
     public ResponseEntity<AcessoDTO> login(@RequestBody AuthenticationDTO authDto, HttpServletResponse response){
 
-        // Agora capturamos o retorno do serviço
-        AcessoDTO acessoDTO = authService.login(authDto, response);
+        AcessoDTO acessoDto = authService.login(authDto, response);
 
-        // E enviamos no corpo da resposta
-        return ResponseEntity.ok(acessoDTO);
+        return ResponseEntity.ok(acessoDto);
+
     }
     
     // Cadastro: Retorna mensagem de sucesso avisando do e-mail
