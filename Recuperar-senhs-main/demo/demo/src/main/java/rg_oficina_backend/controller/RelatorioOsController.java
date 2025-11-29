@@ -5,9 +5,8 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import rg_oficina_backend.dto.RelatorioDTO;
 import rg_oficina_backend.service.RelatorioService;
 
 import java.io.ByteArrayInputStream;
@@ -19,16 +18,16 @@ public class RelatorioOsController {
     @Autowired
     private RelatorioService relatorioService;
 
-    @GetMapping("/geral")
-    public ResponseEntity<InputStreamResource> baixarRelatorio() {
-        // 1. Chama o serviço que você acabou de criar
-        ByteArrayInputStream pdfStream = relatorioService.gerarRelatorioOS();
+    // Mudamos para POST pois estamos enviando dados (datas) no corpo da requisição
+    @PostMapping("/gerar")
+    public ResponseEntity<InputStreamResource> baixarRelatorio(@RequestBody(required = false) RelatorioDTO filtros) {
 
-        // 2. Configura o nome do arquivo que será baixado
+        // Passa o DTO (que pode vir com datas ou nulo) para o serviço
+        ByteArrayInputStream pdfStream = relatorioService.gerarRelatorioOS(filtros);
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "inline; filename=relatorio_oficina.pdf");
 
-        // 3. Entrega o arquivo para o navegador
         return ResponseEntity
                 .ok()
                 .headers(headers)
