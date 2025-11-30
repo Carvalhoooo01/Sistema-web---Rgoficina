@@ -19,7 +19,7 @@ public class RelatorioOsController {
     private RelatorioService relatorioService;
 
     // --- RELATÓRIO 1: ORDENS DE SERVIÇO (POR DATA) ---
-    @PostMapping("/OrdemServico")
+    @PostMapping("/ordemservico")
     public ResponseEntity<InputStreamResource> baixarRelatorio(@RequestBody(required = false) RelatorioDTO filtros) {
 
         ByteArrayInputStream pdfStream = relatorioService.gerarRelatorioOS(filtros);

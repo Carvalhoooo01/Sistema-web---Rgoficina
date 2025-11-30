@@ -23,7 +23,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.List;
 
 import rg_oficina_backend.security.jwt.AuthEntryPointJwt;
 import rg_oficina_backend.security.jwt.AuthFilterToken;
@@ -40,10 +39,13 @@ public class WebSecurityConfig {
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
+    // CORREÇÃO: Injetamos o filtro gerenciado pelo Spring (que tem o @Component)
+    // ao invés de dar 'new' manual.
+    @Autowired
+    private AuthFilterToken authFilterToken;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // Configurado para aceitar senhas em texto puro (Transparente no banco)
-        // Em produção, recomendo mudar para BCryptPasswordEncoder
         return NoOpPasswordEncoder.getInstance();
     }
 
@@ -52,17 +54,12 @@ public class WebSecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    @Bean
-    public AuthFilterToken authFilterToken() {
-        return new AuthFilterToken();
-    }
+    // REMOVIDO: O Bean manual do AuthFilterToken foi removido porque agora usamos @Component na classe
 
-    // --- CONFIGURAÇÃO DO CORS (Resolve o erro do Netlify) ---
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Permite o Netlify e qualquer localhost
         configuration.setAllowedOriginPatterns(Arrays.asList(
                 "https://scos.netlify.app",
                 "http://localhost:*",
@@ -77,34 +74,33 @@ public class WebSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-    // ---------------------------------------------------------
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        // Ativa a configuração de CORS definida no Bean acima
         http.cors(Customizer.withDefaults());
 
         http.csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Rotas Públicas (Liberadas)
+                        // Rotas Públicas
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/usuario/**").permitAll()
 
-                        // --- LIBERAÇÃO DO RELATÓRIO ---
+                        // --- CORREÇÃO DE ROTA ---
+                        // Adicionado singular e plural para garantir que sua requisição passe
+                        .requestMatchers("/relatorio/**").permitAll()
                         .requestMatchers("/relatorios/**").permitAll()
-                        // ------------------------------
+                        // ------------------------
 
-                        // --- LIBERAÇÃO PARA VER ERROS ---
                         .requestMatchers("/error").permitAll()
-                        // --------------------------------
 
-                        // Qualquer outra rota precisa de login (Token)
+                        // Resto bloqueado
                         .anyRequest().authenticated());
 
-        http.addFilterBefore(authFilterToken(), UsernamePasswordAuthenticationFilter.class);
+        // Adiciona o filtro injetado (que agora tem as dependências corretas)
+        http.addFilterBefore(authFilterToken, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
