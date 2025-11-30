@@ -31,7 +31,7 @@ public class ClienteController
 
     }
 
-    @GetMapping("/buscar_info")
+    @PostMapping("/buscar_info")
     public Cliente buscarInfo(@RequestBody InfoDTO infoDTO)
     {
 

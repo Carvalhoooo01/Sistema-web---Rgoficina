@@ -23,11 +23,6 @@ public class OS {
     @JoinColumn(name = "cliente_id") // Boa prática: define o nome da coluna no banco
     private Cliente cliente_id;
 
-    private String cpf_cnpj;
-    private String endereco;
-    private String telefone_celular;
-    private String telefone_fixo;
-
     // Dados da Máquina
     private String tipo;    // Ex: Geladeira
     private String modelo;  // Ex: Frost Free

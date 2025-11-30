@@ -47,7 +47,6 @@ public class ClienteService
         cliente.setNome(clienteDTO.nome());
         cliente.setEmail(clienteDTO.email());
         cliente.setCpf_cnpj(clienteDTO.cpf_cnpj());
-        cliente.setTelefone_fixo(clienteDTO.telefone_fixo());
         cliente.setTelefone_celular(clienteDTO.telefone_celular());
         cliente.setCep(clienteDTO.cep());
         cliente.setEstado(clienteDTO.estado());
@@ -97,7 +96,6 @@ public class ClienteService
         cliente.setNome(clienteDTO.nome());
         cliente.setEmail(clienteDTO.email());
         cliente.setCpf_cnpj(clienteDTO.cpf_cnpj());
-        cliente.setTelefone_fixo(clienteDTO.telefone_fixo());
         cliente.setTelefone_celular(clienteDTO.telefone_celular());
         cliente.setCep(clienteDTO.cep());
         cliente.setEstado(clienteDTO.estado());

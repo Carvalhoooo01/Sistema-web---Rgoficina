@@ -44,10 +44,6 @@ public class OSService
     private Date data_abertura;
         * */
 
-        os.setCpf_cnpj(osDTO.cpf_cnpj());
-        os.setEndereco(osDTO.endereco());
-        os.setTelefone_celular(osDTO.telefone_celular());
-        os.setTelefone_fixo(osDTO.telefone_fixo());
         os.setTipo(osDTO.tipo());
         os.setModelo(osDTO.modelo());
         os.setMarca(osDTO.marca());

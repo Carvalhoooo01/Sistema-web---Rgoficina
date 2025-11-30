@@ -25,7 +25,6 @@ public class Cliente
     private String nome;
     private String cpf_cnpj;
     private String email;
-    private String telefone_fixo;
     private String telefone_celular;
     private String cep;
     private String estado;

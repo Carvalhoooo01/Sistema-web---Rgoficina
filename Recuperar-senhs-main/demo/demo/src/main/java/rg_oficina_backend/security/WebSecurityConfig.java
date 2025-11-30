@@ -62,15 +62,15 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // 1. Quem pode acessar (Seu site no Netlify e o Localhost para testes)
-        configuration.setAllowedOrigins(Arrays.asList("https://scos.netlify.app", "http://localhost:8080"));
+        // Permite o Netlify e qualquer localhost
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+                "https://scos.netlify.app",
+                "http://localhost:*",
+                "http://127.0.0.1:*"
+        ));
 
-        // 2. Quais métodos são permitidos
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        // 3. Quais cabeçalhos (Headers) são permitidos (Authorization é vital para o Token)
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

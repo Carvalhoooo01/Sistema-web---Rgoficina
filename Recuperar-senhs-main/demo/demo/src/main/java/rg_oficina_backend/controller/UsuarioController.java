@@ -52,4 +52,13 @@ public class UsuarioController {
         usuarioService.excluir(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("username")
+    public ResponseEntity<?> username()
+    {
+
+        return null;
+
+    }
+
 }
