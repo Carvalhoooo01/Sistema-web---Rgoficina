@@ -18,22 +18,21 @@ public class OS {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relacionamento com Cliente
     @ManyToOne
-    @JoinColumn(name = "cliente_id") // Boa prática: define o nome da coluna no banco
+    @JoinColumn(name = "cliente_id")
     private Cliente cliente_id;
 
-    // Dados da Máquina
-    private String tipo;    // Ex: Geladeira
-    private String modelo;  // Ex: Frost Free
-    private String marca;   // Ex: Brastemp
+    private String tipo;
+    private String modelo;
+    private String marca;
     private String n_serial;
 
+    // --- CORREÇÃO AQUI ---
+    // columnDefinition = "TEXT" avisa ao banco que este campo aceita textos gigantes
+    @Column(columnDefinition = "TEXT")
     private String descricao;
+
     private String prioridade;
     private String data_abertura;
 
-    // --- REMOVI OS MÉTODOS "getCliente" QUE DAVAM ERRO ---
-    // O Lombok (@Getter) já cria automaticamente:
-    // getCliente_id(), getTipo(), getMarca(), etc.
 }
