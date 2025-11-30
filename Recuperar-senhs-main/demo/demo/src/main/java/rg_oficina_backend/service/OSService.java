@@ -14,13 +14,14 @@ import java.util.List;
 public class OSService
 {
 
+    private final ClienteService clienteService;
     private OSRepository osRepository;
 
-    public OSService(OSRepository osRepository)
+    public OSService(OSRepository osRepository, ClienteService clienteService)
     {
 
         this.osRepository = osRepository;
-
+        this.clienteService = clienteService;
     }
 
     public OS salvar(OSDTO osDTO)
@@ -44,6 +45,7 @@ public class OSService
     private Date data_abertura;
         * */
 
+        os.setCliente_id(clienteService.buscar_por_id(osDTO.cliente_id()));
         os.setTipo(osDTO.tipo());
         os.setModelo(osDTO.modelo());
         os.setMarca(osDTO.marca());

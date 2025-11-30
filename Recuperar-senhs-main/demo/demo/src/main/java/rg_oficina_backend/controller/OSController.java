@@ -43,6 +43,8 @@ public class OSController
     public void salvar(@RequestBody OSDTO osDTO)
     {
 
+        System.out.println("Recebido: " + osDTO);
+
         osService.salvar(osDTO);
 
     }

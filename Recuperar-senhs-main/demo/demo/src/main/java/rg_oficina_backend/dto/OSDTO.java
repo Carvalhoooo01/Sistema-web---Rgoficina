@@ -2,7 +2,7 @@ package rg_oficina_backend.dto;
 
 import rg_oficina_backend.entity.Cliente;
 
-public record OSDTO(Cliente cliente_id,
+public record OSDTO(Long cliente_id,
                     String tipo,
                     String modelo,
                     String marca,
