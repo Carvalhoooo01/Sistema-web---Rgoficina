@@ -18,36 +18,41 @@ import rg_oficina_backend.dto.RecursoDTO;
 import rg_oficina_backend.service.RecursoService;
 
 /**
- *
+ * Controlador de Recursos.
+ * Gerencia os ativos do sistema que podem ser protegidos (Telas, Menus, URLs, Botões).
+ * É a base para a montagem de menus dinâmicos no Front-end.
  * @author Gustavo Carvalho
  */
-
 @RestController
 @RequestMapping(value = "/recurso")
 @CrossOrigin
 public class RecursoController {
 
     @Autowired
-	private RecursoService recursoService;
-	
-	@GetMapping
-	public List<RecursoDTO> listarTodos(){
-		return recursoService.listarTodos();
-	}
-	
-	@PostMapping
-	public void inserir(@RequestBody RecursoDTO recurso) {
-		recursoService.inserir(recurso);
-	}
-	
-	@PutMapping
-	public RecursoDTO alterar(@RequestBody RecursoDTO recurso) {
-		return recursoService.alterar(recurso);
-	}
-	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {
-		recursoService.excluir(id);
-		return ResponseEntity.ok().build();
-	}
+    private RecursoService recursoService;
+
+    // Lista todas as funcionalidades cadastradas no sistema
+    @GetMapping
+    public List<RecursoDTO> listarTodos(){
+        return recursoService.listarTodos();
+    }
+
+    // Cadastra um novo recurso (ex: Nova tela "Estoque" ou endpoint "/api/estoque")
+    @PostMapping
+    public void inserir(@RequestBody RecursoDTO recurso) {
+        recursoService.inserir(recurso);
+    }
+
+    // Atualiza a descrição ou a chave identificadora de um recurso
+    @PutMapping
+    public RecursoDTO alterar(@RequestBody RecursoDTO recurso) {
+        return recursoService.alterar(recurso);
+    }
+
+    // Remove um recurso do sistema (Cuidado: deve-se remover as permissões vinculadas antes)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {
+        recursoService.excluir(id);
+        return ResponseEntity.ok().build();
+    }
 }

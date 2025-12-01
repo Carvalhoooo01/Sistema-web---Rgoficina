@@ -18,38 +18,42 @@ import rg_oficina_backend.dto.PerfilDTO;
 import rg_oficina_backend.service.PerfilService;
 
 /**
- *
- * @author Gustavo Carvalho
+ * Controlador de Perfis de Acesso.
+ * Gerencia os cargos/roles do sistema (ex: ADMIN, USER, TÉCNICO).
+ * * @author Gustavo Carvalho
  */
-
 @RestController
 @RequestMapping(value = "/perfil")
-@CrossOrigin
+@CrossOrigin // Permite que o Front-end (em outra porta/domínio) acesse estes recursos
 public class PerfilController {
 
-@Autowired
-private PerfilService perfilService;
+    @Autowired
+    private PerfilService perfilService;
 
-@GetMapping
-public List<PerfilDTO> listarTodos(){
-    return perfilService.listarTodos();
-}
+    // Lista todos os perfis disponíveis (Útil para preencher selects de cadastro)
+    @GetMapping
+    public List<PerfilDTO> listarTodos(){
+        return perfilService.listarTodos();
+    }
 
-@PostMapping
-public void inserir(@RequestBody PerfilDTO perfil){
-    perfilService.inserir(perfil);
-}
+    // Cria um novo tipo de perfil de acesso
+    @PostMapping
+    public void inserir(@RequestBody PerfilDTO perfil){
+        perfilService.inserir(perfil);
+    }
 
-@PutMapping
-public PerfilDTO alterar(@RequestBody PerfilDTO perfil){
-    return perfilService.alterar(perfil);
+    // Atualiza a descrição ou permissões de um perfil.
+    // O ID deve estar contido dentro do objeto PerfilDTO enviado no corpo da requisição.
+    @PutMapping
+    public PerfilDTO alterar(@RequestBody PerfilDTO perfil){
+        return perfilService.alterar(perfil);
+    }
 
-}
-
-@DeleteMapping("/{id}")
-public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {
-    perfilService.excluir(id);
-    return ResponseEntity.ok().build();
-}
+    // Remove um perfil do sistema pelo seu ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {
+        perfilService.excluir(id);
+        return ResponseEntity.ok().build();
+    }
 
 }

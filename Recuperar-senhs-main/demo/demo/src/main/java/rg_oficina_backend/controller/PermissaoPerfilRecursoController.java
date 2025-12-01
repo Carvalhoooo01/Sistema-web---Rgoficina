@@ -18,36 +18,41 @@ import rg_oficina_backend.dto.PermissaoPerfilRecursoDTO;
 import rg_oficina_backend.service.PermissaoPerfilRecusoService;
 
 /**
- *
+ * Controlador de Permissões Granulares.
+ * Gerencia o nível mais detalhado de segurança, ligando um Perfil a um Recurso específico
+ * (Ex: O Perfil 'Técnico' pode acessar o Recurso 'Tela de Relatórios'?).
  * @author Gustavo Carvalho
  */
-
 @RestController
 @RequestMapping(value = "/permissao-perfil-recurso")
 @CrossOrigin
 public class PermissaoPerfilRecursoController {
 
     @Autowired
-	private PermissaoPerfilRecusoService permissaoPerfilRecursoService;
-	
-	@GetMapping
-	public List<PermissaoPerfilRecursoDTO> listarTodos(){
-		return permissaoPerfilRecursoService.listarTodos();
-	}
-	
-	@PostMapping
-	public void inserir(@RequestBody PermissaoPerfilRecursoDTO permissaoPerfilRecurso) {
-		permissaoPerfilRecursoService.inserir(permissaoPerfilRecurso);
-	}
-	
-	@PutMapping
-	public PermissaoPerfilRecursoDTO alterar(@RequestBody PermissaoPerfilRecursoDTO permissaoPerfilRecurso) {
-		return permissaoPerfilRecursoService.alterar(permissaoPerfilRecurso);
-	}
-	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {
-		permissaoPerfilRecursoService.excluir(id);
-		return ResponseEntity.ok().build();
-	}
+    private PermissaoPerfilRecusoService permissaoPerfilRecursoService;
+
+    // Lista todas as regras de acesso cadastradas no sistema
+    @GetMapping
+    public List<PermissaoPerfilRecursoDTO> listarTodos(){
+        return permissaoPerfilRecursoService.listarTodos();
+    }
+
+    // Cria uma nova regra de permissão (Concede acesso a um recurso para um perfil)
+    @PostMapping
+    public void inserir(@RequestBody PermissaoPerfilRecursoDTO permissaoPerfilRecurso) {
+        permissaoPerfilRecursoService.inserir(permissaoPerfilRecurso);
+    }
+
+    // Atualiza uma regra de permissão existente
+    @PutMapping
+    public PermissaoPerfilRecursoDTO alterar(@RequestBody PermissaoPerfilRecursoDTO permissaoPerfilRecurso) {
+        return permissaoPerfilRecursoService.alterar(permissaoPerfilRecurso);
+    }
+
+    // Revoga o acesso (Remove a permissão de um perfil sobre um recurso)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {
+        permissaoPerfilRecursoService.excluir(id);
+        return ResponseEntity.ok().build();
+    }
 }

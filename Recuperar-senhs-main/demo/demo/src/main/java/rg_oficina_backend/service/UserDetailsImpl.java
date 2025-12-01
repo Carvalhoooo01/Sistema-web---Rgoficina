@@ -9,18 +9,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import rg_oficina_backend.entity.UsuarioEntity;
 
 /**
- *
+ * Implementação da Identidade do Usuário (Spring Security).
+ * Funciona como um ADAPTADOR entre a Entidade do Banco (UsuarioEntity) e o Framework de Segurança.
  * @author Gustavo Carvalho
  */
 public class UserDetailsImpl implements UserDetails {
 
+    private static final long serialVersionUID = 1L; // Boa prática em classes Serializáveis
+
     private final Long id;
     private final String email;
-    private final String password;
+    private final String password; // Senha Criptografada (Hash)
 
     private final Collection<? extends GrantedAuthority> authorities;
 
-    // Construtor atualizado: Removemos 'name' e 'username' separados
+    // Construtor privado (usamos o método build para instanciar)
     public UserDetailsImpl(Long id, String email, String password,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
@@ -29,14 +32,17 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
+    /**
+     * Converte um UsuarioEntity (Banco) para UserDetailsImpl (Segurança).
+     * @param usuario O usuário vindo do banco de dados.
+     * @return O objeto de autenticação pronto.
+     */
     public static UserDetailsImpl build(UsuarioEntity usuario) {
         return new UserDetailsImpl(
                 usuario.getId(),
-                // usuario.getNome(),  <-- REMOVIDO pois não existe mais na Entity
-                // usuario.getLogin(), <-- REMOVIDO pois não existe mais na Entity
-                usuario.getEmail(),
+                usuario.getEmail(), // Aqui definimos que o identificador principal é o Email
                 usuario.getSenha(),
-                new ArrayList<>() // Sem permissões por enquanto
+                new ArrayList<>() // Lista de permissões (vazia por enquanto, expansível para RBAC)
         );
     }
 
@@ -48,7 +54,7 @@ public class UserDetailsImpl implements UserDetails {
         return email;
     }
 
-    // --- MÉTODOS OBRIGATÓRIOS DO SPRING SECURITY ---
+    // --- MÉTODOS OBRIGATÓRIOS DA INTERFACE USERDETAILS ---
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -60,12 +66,16 @@ public class UserDetailsImpl implements UserDetails {
         return password;
     }
 
-    // PONTO CRUCIAL: O Spring Security pergunta "Qual é o nome de usuário?".
-    // Nós respondemos: "É o email".
+    /**
+     * O Spring Security usa este método para saber quem é o usuário.
+     * Sobrescrevemos para retornar o EMAIL, pois é assim que logamos no sistema.
+     */
     @Override
     public String getUsername() {
         return email;
     }
+
+    // Configurações de validade da conta (Retornamos true para simplificar: a conta nunca expira)
 
     @Override
     public boolean isAccountNonExpired() {

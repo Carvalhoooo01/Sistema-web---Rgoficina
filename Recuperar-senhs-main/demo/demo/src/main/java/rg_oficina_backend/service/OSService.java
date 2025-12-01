@@ -9,12 +9,19 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * Service de Ordem de Serviço.
+ * Responsável pelo fluxo principal do sistema.
+ * Demonstra a interação entre serviços (OS consome Cliente).
+ */
 @Service
 public class OSService {
 
+    // Dependências imutáveis (Boas práticas de injeção)
     private final ClienteService clienteService;
     private final OSRepository osRepository;
 
+    // Injeção via construtor (Facilita testes unitários e evita NullPointerException)
     public OSService(OSRepository osRepository, ClienteService clienteService) {
         this.osRepository = osRepository;
         this.clienteService = clienteService;
@@ -23,12 +30,11 @@ public class OSService {
     public OS salvar(OSDTO osDTO) {
         OS os = new OS();
 
-        // --- CORREÇÃO AQUI ---
-        // Se o seu projeto segue o padrão snake_case (com underline),
-        // o record provavelmente tem o campo 'cliente_id'.
-        // Trocamos .clienteId() por .cliente_id()
-
+        // INTEGRAÇÃO ENTRE SERVICES:
+        // Converte o ID numérico (vindo do JSON) no Objeto Cliente real (vindo do banco)
         os.setCliente_id(clienteService.buscar_por_id(osDTO.cliente_id()));
+
+        // Mapeamento dos campos restantes
         os.setTipo(osDTO.tipo());
         os.setModelo(osDTO.modelo());
         os.setMarca(osDTO.marca());
@@ -36,6 +42,7 @@ public class OSService {
         os.setDescricao(osDTO.descricao());
         os.setPrioridade(osDTO.prioridade());
 
+        // Define data automática (Segurança/Auditoria)
         LocalDate hoje = LocalDate.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         os.setData_abertura(hoje.format(formato));
@@ -48,6 +55,7 @@ public class OSService {
     }
 
     public OS buscar_por_id(Long id) {
+        // Retorna a OS ou null se não encontrar
         return osRepository.findById(id).orElse(null);
     }
 
@@ -56,8 +64,7 @@ public class OSService {
     }
 
     public OS editar(OS os, OSDTO osDTO) {
-
-        // Correção na edição também: .cliente_id()
+        // Atualiza o vínculo do cliente caso tenha sido alterado na edição
         os.setCliente_id(clienteService.buscar_por_id(osDTO.cliente_id()));
 
         os.setTipo(osDTO.tipo());
@@ -76,6 +83,7 @@ public class OSService {
         String dataIniFormatada = data_inicio.format(fmt);
         String dataFimFormatada = data_fim.format(fmt);
 
+        // Chama a query customizada no Repository
         return osRepository.findAllForRelatorio(dataIniFormatada, dataFimFormatada);
     }
 }

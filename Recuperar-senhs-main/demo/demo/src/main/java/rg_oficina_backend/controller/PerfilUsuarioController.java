@@ -18,35 +18,40 @@ import rg_oficina_backend.dto.PerfilUsuarioDTO;
 import rg_oficina_backend.service.PerfilUsuarioService;
 
 /**
- *
+ * Controlador de Vínculos (PerfilUsuario).
+ * Responsável por associar um Usuário a um Perfil de acesso (Ex: Dizer que o usuário X é ADMIN).
  * @author Gustavo Carvalho
  */
-
 @RestController
 @RequestMapping(value = "/perfil-usuario")
 @CrossOrigin
 public class PerfilUsuarioController {
-@Autowired
-	private PerfilUsuarioService perfilUsuarioService;
-	
-	@GetMapping("/listar")
-	public List<PerfilUsuarioDTO> listarTodos(){
-		return perfilUsuarioService.listarTodos();
-	}
-	
-	@PostMapping
-	public void inserir(@RequestBody PerfilUsuarioDTO perfilUsuario) {
-		perfilUsuarioService.inserir(perfilUsuario);
-	}
-	
-	@PutMapping
-	public PerfilUsuarioDTO alterar(@RequestBody PerfilUsuarioDTO perfilUsuario) {
-		return perfilUsuarioService.alterar(perfilUsuario);
-	}
-	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {
-		perfilUsuarioService.excluir(id);
-		return ResponseEntity.ok().build();
-	}
+
+    @Autowired
+    private PerfilUsuarioService perfilUsuarioService;
+
+    // Lista todas as associações de permissões existentes no banco
+    @GetMapping("/listar")
+    public List<PerfilUsuarioDTO> listarTodos(){
+        return perfilUsuarioService.listarTodos();
+    }
+
+    // Cria o vínculo: Conecta um Usuário específico a um Perfil específico
+    @PostMapping
+    public void inserir(@RequestBody PerfilUsuarioDTO perfilUsuario) {
+        perfilUsuarioService.inserir(perfilUsuario);
+    }
+
+    // Atualiza um vínculo existente (Ex: Mudar o nível de acesso de um usuário)
+    @PutMapping
+    public PerfilUsuarioDTO alterar(@RequestBody PerfilUsuarioDTO perfilUsuario) {
+        return perfilUsuarioService.alterar(perfilUsuario);
+    }
+
+    // Remove o vínculo (Revoga a permissão do usuário, sem apagar o usuário do sistema)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {
+        perfilUsuarioService.excluir(id);
+        return ResponseEntity.ok().build();
+    }
 }

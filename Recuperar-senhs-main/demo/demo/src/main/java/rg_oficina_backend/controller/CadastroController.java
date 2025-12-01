@@ -14,38 +14,38 @@ import rg_oficina_backend.security.jwt.JwtUtils;
 @RequestMapping("/cadastro")
 public class CadastroController {
 
-    // MELHORIA 1: Usamos Autowired para o Spring carregar a configuração correta (secret key)
+    // Injeção da classe utilitária responsável por validar a criptografia do Token
     @Autowired
     private JwtUtils jwtUtils;
 
+    // Endpoint utilitário para verificar se a sessão do usuário ainda é válida (True/False)
     @GetMapping("/verificar")
     public ResponseEntity<Boolean> checkAuth(HttpServletRequest request) {
 
         String token = null;
 
-        // PASSO 1: Tenta pegar o Token do Header (Padrão Bearer) - É o que seu front está mandando agora
+        // Estratégia 1: Tenta extrair o Token do cabeçalho 'Authorization' (Padrão Bearer)
         String headerAuth = request.getHeader("Authorization");
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            token = headerAuth.substring(7); // Remove a palavra "Bearer " e pega só o código
+            token = headerAuth.substring(7); // Remove o prefixo "Bearer " para pegar apenas o hash
         }
 
-        // PASSO 2: Se não achou no Header, tenta nos Cookies (Fallback)
-        // CORREÇÃO DO ERRO: Adicionamos a verificação (request.getCookies() != null) antes do loop
+        // Estratégia 2 (Fallback): Se não houver Header, busca o token nos Cookies da requisição
         if (token == null && request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                if ("token".equals(cookie.getName())) { // Verifica se o cookie se chama "token"
+                if ("token".equals(cookie.getName())) { // Procura especificamente o cookie "token"
                     token = cookie.getValue();
                     break;
                 }
             }
         }
 
-        // PASSO 3: Valida o Token encontrado
+        // Valida o token encontrado (verifica assinatura e expiração)
         if (token != null && jwtUtils.validateJwtToken(token)) {
             return ResponseEntity.ok(true);
         }
 
-        // Se chegou aqui, não tem token ou é inválido
+        // Retorna falso caso nenhum token válido seja encontrado
         return ResponseEntity.ok(false);
     }
 }

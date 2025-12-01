@@ -26,11 +26,11 @@ public class AuthController {
 
     @Autowired
     private AuthService authService;
-    
+
     @Autowired
     private UsuarioService usuarioService;
-    
-    // Login: Retorna o Token JWT
+
+    // Realiza o login do usuario verificando as credenciais e retornando o token de acesso
     @PostMapping(value = "/login")
     public ResponseEntity<AcessoDTO> login(@RequestBody AuthenticationDTO authDto, HttpServletResponse response){
 
@@ -39,27 +39,28 @@ public class AuthController {
         return ResponseEntity.ok(acessoDto);
 
     }
-    
-    // Cadastro: Retorna mensagem de sucesso avisando do e-mail
+
+    // Cadastra um novo usuário no banco de dados e envia a senha gerada para o e-mail cadastrado
     @PostMapping(value = "/novoUsuario")
     public ResponseEntity<String> inserirNovoUsuario(@RequestBody UsuarioDTO novoUsuario){
         usuarioService.inserirNovoUsuario(novoUsuario);
         return ResponseEntity.ok("Usuário cadastrado com sucesso! Verifique sua senha no e-mail: " + novoUsuario.getEmail());
     }
-    
-    // Recuperação: Endpoint para "Esqueci minha senha"
+
+    // Inicia o processo de recuperação de senha enviando instruções para o e-mail do usuário
     @PostMapping(value = "/esqueci-senha")
     public ResponseEntity<String> recuperarSenha(@RequestBody UsuarioRecuperarDTO dto) {
         String resultado = usuarioService.recuperarSenha(dto.email());
         return ResponseEntity.ok(resultado);
     }
-    
-    // Verificação de cadastro (link do e-mail)
+
+    // Verifica o cadastro do usuário através do link enviado por e-mail (validação de UUID)
     @GetMapping(value = "/verificarCadastro/{uuid}")
     public String verificarCadastro(@PathVariable("uuid") String uuid) {
         return usuarioService.verificarCadastro(uuid);
     }
 
+    // Realiza o logout do usuário limpando os cookies de autenticação do navegador
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
 

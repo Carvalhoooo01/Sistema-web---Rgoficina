@@ -18,6 +18,11 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+/**
+ * Service de Relatórios (Geração de PDF).
+ * Utiliza a biblioteca iText/OpenPDF para desenhar documentos.
+ * @author Gustavo Carvalho
+ */
 @Service
 public class RelatorioService {
 
@@ -35,10 +40,11 @@ public class RelatorioService {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try {
+            // Conecta o Documento ao Fluxo de Saída (Output Stream)
             PdfWriter.getInstance(document, out);
             document.open();
 
-            // 1. Busca de Dados (Com Filtro de Data)
+            // 1. Busca de Dados (Inteligente: Com ou Sem Filtro)
             List<OS> listaOs;
             String textoPeriodo = "Período: Completo";
 
@@ -47,28 +53,32 @@ public class RelatorioService {
                 String inicioStr = sdf.format(filtros.data_inicio());
                 String fimStr = sdf.format(filtros.data_final());
 
+                // Busca filtrada no banco
                 listaOs = osRepository.findAllForRelatorio(inicioStr, fimStr);
                 textoPeriodo = "Período: " + inicioStr + " até " + fimStr;
             } else {
                 listaOs = osRepository.findAll();
             }
 
-            // 2. Cabeçalho
+            // 2. Montagem Visual (Cabeçalho e Título)
             adicionarCabecalho(document, "Relatório de Ordens de Serviço");
             adicionarPeriodo(document, textoPeriodo);
 
-            // 3. Tabela
-            PdfPTable table = new PdfPTable(5);
+            // 3. Tabela Dinâmica
+            PdfPTable table = new PdfPTable(5); // 5 Colunas
             table.setWidthPercentage(100);
-            table.setWidths(new int[]{1, 3, 3, 4, 2});
+            table.setWidths(new int[]{1, 3, 3, 4, 2}); // Proporção das larguras
 
             String[] headers = {"ID", "Cliente", "Máquina", "Descrição", "Prioridade"};
             adicionarCabecalhoTabela(table, headers);
 
             Font fontDados = FontFactory.getFont(FontFactory.HELVETICA, 10);
 
+            // Preenchimento das linhas
             for (OS os : listaOs) {
                 table.addCell(new Phrase(String.valueOf(os.getId()), fontDados));
+
+                // Tratamento para evitar NullPointerException se cliente for nulo
                 String nomeCliente = (os.getCliente_id() != null) ? os.getCliente_id().getNome() : "---";
                 table.addCell(new Phrase(nomeCliente, fontDados));
 
@@ -85,11 +95,12 @@ public class RelatorioService {
         } catch (DocumentException e) {
             e.printStackTrace();
         }
+        // Retorna o arquivo binário pronto para download
         return new ByteArrayInputStream(out.toByteArray());
     }
 
     // ============================================================================================
-    // RELATÓRIO 2: CLIENTES (Atualizado com Endereço Completo)
+    // RELATÓRIO 2: CLIENTES
     // ============================================================================================
     public ByteArrayInputStream gerarRelatorioClientes(RelatorioDTO filtros) {
         Document document = new Document();
@@ -99,7 +110,7 @@ public class RelatorioService {
             PdfWriter.getInstance(document, out);
             document.open();
 
-            // 1. Busca de Dados
+            // Lógica de busca similar à de OS
             List<Cliente> clientes;
             String textoPeriodo = "Listagem Completa de Clientes";
 
@@ -107,25 +118,18 @@ public class RelatorioService {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 String inicioStr = sdf.format(filtros.data_inicio());
                 String fimStr = sdf.format(filtros.data_final());
-
-                // Lembre-se: O ClienteRepository precisa ter o método findAllForRelatorio corrigido
                 clientes = clienteRepository.findAllForRelatorio(inicioStr, fimStr);
                 textoPeriodo = "Cadastrados entre: " + inicioStr + " e " + fimStr;
             } else {
                 clientes = clienteRepository.findAll();
             }
 
-            // 2. Cabeçalho
             adicionarCabecalho(document, "Relatório de Clientes");
             adicionarPeriodo(document, textoPeriodo);
 
-            // 3. Tabela (5 Colunas)
             PdfPTable table = new PdfPTable(5);
             table.setWidthPercentage(100);
-
-            // Ajuste de largura: Aumentei a última coluna para caber o endereço
-            // ID(1), Nome(3), Email(3), CPF(2), Endereço(4)
-            table.setWidths(new int[]{1, 3, 3, 2, 4});
+            table.setWidths(new int[]{1, 3, 3, 2, 4}); // Última coluna maior para o endereço
 
             String[] headers = {"ID", "Nome", "Email", "CPF/CNPJ", "Endereço"};
             adicionarCabecalhoTabela(table, headers);
@@ -133,28 +137,18 @@ public class RelatorioService {
             Font fontDados = FontFactory.getFont(FontFactory.HELVETICA, 9);
 
             for (Cliente c : clientes) {
-                // ID
                 table.addCell(new Phrase(String.valueOf(c.getId()), fontDados));
-
-                // Nome
                 table.addCell(new Phrase(c.getNome() != null ? c.getNome() : "", fontDados));
-
-                // Email
                 table.addCell(new Phrase(c.getEmail() != null ? c.getEmail() : "-", fontDados));
-
-                // CPF/CNPJ
                 table.addCell(new Phrase(c.getCpf_cnpj() != null ? c.getCpf_cnpj() : "-", fontDados));
 
-                // --- LÓGICA DO ENDEREÇO COMPLETO ---
+                // Formatação do endereço completo
                 String rua = c.getRua_numero() != null ? c.getRua_numero() : "";
                 String bairro = c.getBairro() != null ? c.getBairro() : "";
-
                 String enderecoCompleto = rua + (!bairro.isEmpty() ? " - " + bairro : "");
-
                 if (enderecoCompleto.isEmpty()) enderecoCompleto = "-";
 
                 table.addCell(new Phrase(enderecoCompleto, fontDados));
-                // -----------------------------------
             }
 
             document.add(table);
@@ -166,9 +160,7 @@ public class RelatorioService {
         return new ByteArrayInputStream(out.toByteArray());
     }
 
-    // ========================================================================
-    // MÉTODOS AUXILIARES (COPIE E COLE ISSO NO FINAL DA CLASSE, ANTES DO '}')
-    // ========================================================================
+    // --- MÉTODOS AUXILIARES PARA ESTILIZAÇÃO (REUSO DE CÓDIGO) ---
 
     private void adicionarCabecalho(Document document, String tituloRelatorio) throws DocumentException {
         Font fontEmpresa = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, Color.BLUE);
@@ -190,6 +182,7 @@ public class RelatorioService {
 
     private void adicionarCabecalhoTabela(PdfPTable table, String[] headers) {
         for (String h : headers) {
+            // Estilo: Fundo cinza escuro, letra branca e negrito
             PdfPCell cell = new PdfPCell(new Phrase(h, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 11, Color.WHITE)));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setBackgroundColor(Color.DARK_GRAY);

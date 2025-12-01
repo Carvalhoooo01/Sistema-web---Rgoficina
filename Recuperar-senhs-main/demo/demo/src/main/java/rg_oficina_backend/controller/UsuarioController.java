@@ -18,10 +18,10 @@ import rg_oficina_backend.dto.UsuarioDTO;
 import rg_oficina_backend.service.UsuarioService;
 
 /**
- *
+ * Controlador de Usuários Administrativos.
+ * Gerencia o CRUD dos colaboradores que terão acesso ao sistema.
  * @author Gustavo Carvalho
  */
-
 @RestController
 @RequestMapping(value = "/usuario")
 @CrossOrigin
@@ -30,35 +30,38 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    // Lista todos os usuários do sistema, retornando DTOs para ocultar dados sensíveis (como senhas)
     @GetMapping
     public List<UsuarioDTO> listarTodos(){
         return usuarioService.listarTodos();
     }
 
+    // Cria um novo usuário administrativo.
+    // Aciona o fluxo de "Novo Usuário" que gera senha aleatória e envia por e-mail.
     @PostMapping
     public void inserir(@RequestBody UsuarioDTO usuario) {
-        // Alterei para 'inserirNovoUsuario' para garantir que gere a senha automática e envie o email
         usuarioService.inserirNovoUsuario(usuario);
     }
 
+    // Atualiza dados cadastrais do usuário (Nome, E-mail, etc.)
     @PutMapping
     public UsuarioDTO alterar(@RequestBody UsuarioDTO usuario) {
         return usuarioService.alterar(usuario);
     }
 
-    // Exemplo: http://localhost:8080/usuario/3
+    // Remove um usuário do sistema pelo ID.
+    // Exemplo de chamada: DELETE http://localhost:8080/usuario/3
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable("id") Long id){
         usuarioService.excluir(id);
         return ResponseEntity.ok().build();
     }
 
+
     @GetMapping("username")
     public ResponseEntity<?> username()
     {
-
         return null;
-
     }
 
 }
