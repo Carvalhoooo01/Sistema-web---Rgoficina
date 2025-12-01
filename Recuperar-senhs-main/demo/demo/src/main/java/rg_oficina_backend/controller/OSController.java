@@ -62,7 +62,7 @@ public class OSController
 
         }
 
-        osService.editar(osSalvo);
+        osService.editar(osSalvo, osDTO);
 
         return ResponseEntity.noContent().build();
 

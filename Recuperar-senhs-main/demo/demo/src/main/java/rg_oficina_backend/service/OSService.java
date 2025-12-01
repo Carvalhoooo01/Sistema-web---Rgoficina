@@ -45,7 +45,7 @@ public class OSService
     private Date data_abertura;
         * */
 
-        os.setCliente_id(clienteService.buscar_por_id(osDTO.cliente_id()));
+        os.setCliente_id(clienteService.buscar_por_id(osDTO.clienteId()));
         os.setTipo(osDTO.tipo());
         os.setModelo(osDTO.modelo());
         os.setMarca(osDTO.marca());
@@ -83,8 +83,16 @@ public class OSService
 
     }
 
-    public OS editar(OS os)
+    public OS editar(OS os, OSDTO osDTO)
     {
+
+        os.setCliente_id(clienteService.buscar_por_id(osDTO.clienteId()));
+        os.setTipo(osDTO.tipo());
+        os.setModelo(osDTO.modelo());
+        os.setMarca(osDTO.marca());
+        os.setN_serial(osDTO.n_serial());
+        os.setDescricao(osDTO.descricao());
+        os.setPrioridade(osDTO.prioridade());
 
         return osRepository.save(os);
 
