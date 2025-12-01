@@ -1,7 +1,7 @@
 package rg_oficina_backend.dto;
 
 public record OSDTO(
-        Long clienteId, // <--- MUDAMOS AQUI: De "Cliente" para "Long"
+        Long cliente_id, // <--- MUDAMOS AQUI: De "Cliente" para "Long"
         String tipo,
         String modelo,
         String marca,
