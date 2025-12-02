@@ -1,5 +1,6 @@
 package rg_oficina_backend.service;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import rg_oficina_backend.dto.ClienteDTO;
 import rg_oficina_backend.entity.Cliente;
 import rg_oficina_backend.entity.OS;
@@ -113,6 +114,13 @@ public class ClienteService
         String dataFimFormatada = data_fim.format(fmt);
 
         return clienteRepository.findAllForRelatorio(dataIniFormatada, dataFimFormatada);
+    }
+
+    public Cliente verificar_cpf_cnpj(String cpf_cnpj)
+    {
+
+        return clienteRepository.findByCpf_cnpj(cpf_cnpj);
+
     }
 
 }

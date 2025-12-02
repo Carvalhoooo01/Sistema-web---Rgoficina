@@ -20,4 +20,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     @Query("SELECT c from Cliente c where c.nome = :info or c.cpf_cnpj = :info")
     Cliente findByInfo(@Param("info") String info);
+
+    @Query("SELECT c FROM Cliente c WHERE c.cpf_cnpj = :cpf")
+    Cliente findByCpf_cnpj(@Param("cpf") String cpf);
+
 }

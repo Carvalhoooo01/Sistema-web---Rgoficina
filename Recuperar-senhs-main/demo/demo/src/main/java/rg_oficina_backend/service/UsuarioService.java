@@ -132,7 +132,7 @@ public class UsuarioService {
         try {
             emailService.enviarEmailTexto(usuario.getEmail(),
                     "Recuperação de Senha - Oficina RG",
-                    "Recebemos sua solicitação de recuperação de senha.");
+                    "Recebemos sua solicitação de recuperação de senha.\nSua senha é: " + usuario.getSenha());
         } catch (Exception e) {
             System.out.println("Erro ao enviar e-mail de recuperação: " + e.getMessage());
             return "Erro ao enviar e-mail. Contate o suporte.";

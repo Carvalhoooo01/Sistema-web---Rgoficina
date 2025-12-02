@@ -1,6 +1,7 @@
 package rg_oficina_backend.controller;
 
 import rg_oficina_backend.dto.ClienteDTO;
+import rg_oficina_backend.dto.Cpf_cnpjDTO;
 import rg_oficina_backend.dto.InfoDTO;
 import rg_oficina_backend.dto.RelatorioDTO;
 import rg_oficina_backend.entity.Cliente;
@@ -96,6 +97,16 @@ public class ClienteController
         LocalDate data_fim = relatorioDTO.data_final().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         return clienteService.gerar_relatorio(data_inicio, data_fim);
+    }
+
+    @PostMapping("/verificar_cpf_cnpj")
+    public boolean verificar_cpf_cnpj(@RequestBody Cpf_cnpjDTO cpf_cnpjDTO)
+    {
+
+        Cliente cliente = clienteService.verificar_cpf_cnpj(cpf_cnpjDTO.cpf_cnpj());
+
+        return !(cliente == null);
+
     }
 
 }
